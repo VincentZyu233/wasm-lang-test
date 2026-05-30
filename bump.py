@@ -16,6 +16,7 @@ import sys
 import re
 import json
 import argparse
+import subprocess
 from pathlib import Path
 
 
@@ -76,6 +77,17 @@ def update_yaml_file(filepath, new_version):
         f.write(content)
 
     print(f"✓ Updated {filepath}")
+
+
+def regenerate_lang_stats(root):
+    """Regenerate the README SVG locally after bumping the version."""
+    script_path = root / 'scripts' / 'generate_lang_stats.py'
+    result = subprocess.run([sys.executable, str(script_path)], check=False)
+    if result.returncode != 0:
+        print("\n⚠ SVG 生成失败，请检查 scripts/generate_lang_stats.py")
+        sys.exit(result.returncode)
+
+    print("✓ Updated docs/lang-stats.svg")
 
 
 def main():
@@ -150,8 +162,10 @@ def main():
         elif file_type == 'yaml':
             update_yaml_file(filepath, new_version)
 
+    regenerate_lang_stats(root)
+
     print(f"\n✅ 版本号已更新为 {new_version}")
-    print(f"\n下一步: git add -A && git commit -m 'chore: bump version to {new_version}'")
+    print(f"\n下一步: git add -A && git commit -m 'chore: bump version to {new_version} build action'")
 
 
 if __name__ == '__main__':

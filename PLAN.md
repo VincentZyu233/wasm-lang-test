@@ -40,7 +40,7 @@ python bump.py -v 0.1.2
 
 ```bash
 # 1. Modify code
-# 2. Update version
+# 2. Update version + refresh docs/lang-stats.svg
 python bump.py 0.1.2
 
 # 3. Commit
@@ -55,6 +55,8 @@ git push origin main
 
 - `build action` - Build only (no publish)
 - `build publish` - Build + publish to npm
+
+SVG 更新不再由 CI 触发，改为本地执行 `python bump.py <version>` 时自动生成。
 
 Example:
 ```bash
@@ -108,7 +110,7 @@ Published to npm registry:
 # 2. Test locally
 npm run build:wasm
 
-# 3. Update version
+# 3. Update version + refresh SVG
 python bump.py 0.1.2
 
 # 4. Commit
@@ -124,7 +126,7 @@ git push
 # 2. Start dev server
 npm run dev
 
-# 3. Update version
+# 3. Update version + refresh SVG
 python bump.py 0.1.2
 
 # 4. Commit
@@ -175,8 +177,3 @@ A: See "Manual Publishing" section in `docs/build.md`.
 ## 📞 Contact
 
 GitHub: https://github.com/VincentZyu233/wasm-lang-test
-
----
-
-**Last Updated**: 2026-05-30
-**Current Version**: 0.1.2

@@ -6,6 +6,8 @@
 
 ![Language Distribution](docs/lang-stats.svg)
 
+这张 SVG 现在由本地 `python bump.py <version>` 自动更新，不再由 GitHub Actions 回写仓库。
+
 ## 快速开始
 
 ### 方式 1：使用已发布的 npm 包（推荐）
@@ -88,6 +90,9 @@ wasm-lang-test/
 提交包含关键词的 commit：
 
 ```bash
+# 先 bump 版本，并自动更新 docs/lang-stats.svg
+python bump.py 0.1.2
+
 # 仅编译
 git commit -m "feat: xxx build action"
 
@@ -117,13 +122,15 @@ git push origin main
 1. 编辑对应语言的源代码
 2. 本地编译：`npm run build:wasm`
 3. 测试 UI：`npm run dev`
-4. 提交并推送：`git commit -m "feat: xxx build publish"`
+4. 更新版本并自动刷新 SVG：`python bump.py 0.1.2`
+5. 提交并推送：`git commit -m "feat: xxx build publish"`
 
 ### 修改 UI
 
 1. 编辑 `ui/` 目录下的文件
 2. 启动开发服务器：`npm run dev`
-3. 提交：`git commit -m "feat: ui improvements"`
+3. 如需发版，执行：`python bump.py 0.1.2`
+4. 提交：`git commit -m "feat: ui improvements build action"`
 
 ## 文档
 

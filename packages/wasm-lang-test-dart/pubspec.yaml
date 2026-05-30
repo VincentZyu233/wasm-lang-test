@@ -1,5 +1,5 @@
 name: wasm_lang_test_dart
-version: 0.1.2
+version: 0.1.4
 description: Dart WASM benchmark module
 
 environment:

@@ -2,16 +2,16 @@
 
 ## GitHub CI 行为
 
-| 触发条件 | 编译 | 生成 SVG | 发布到 npm | 创建 Release |
-|---------|------|---------|----------|------------|
-| 推送到 main | ✅ | ✅ | ❌ | ❌ |
-| 推送到 main + `build action` | ✅ | ✅ | ❌ | ❌ |
-| 推送到 main + `build publish` | ✅ | ✅ | ✅ | ✅ |
-| 手动触发 (workflow_dispatch) | ✅ | ✅ | ❌ | ❌ |
+| 触发条件 | 编译 | 发布到 npm | 创建 Release |
+|---------|------|----------|------------|
+| 推送到 main | ❌ | ❌ | ❌ |
+| 推送到 main + `build action` | ✅ | ❌ | ❌ |
+| 推送到 main + `build publish` | ✅ | ✅ | ✅ |
+| Pull Request 到 `main` | ✅ | ❌ | ❌ |
 
 ## 概述
 
-本项目使用 GitHub Actions 自动编译三种语言（C++、Go、Rust）的 WebAssembly 模块，并发布到 npm registry。每个模块都是独立的 npm 包，支持自动签名和版本管理。
+本项目使用 GitHub Actions 自动编译五种语言（C++、Go、Rust、Dart、Kotlin）的 WebAssembly 模块，并发布到 npm registry。
 
 ## 项目结构
 
@@ -70,35 +70,25 @@ emcripten src/main.cpp -o main.js -s WASM=1 -O3
 
 #### 步骤 3：更新版本号
 
-编辑 `package.json`，更新版本号：
-
-```json
-{
-  "version": "0.1.0"
-}
+```bash
+python bump.py 0.1.2
 ```
 
 #### 步骤 4：提交并推送
 
 ```bash
-# 更新所有模块
-npm version patch  # 或 minor/major
-
-# 提交包含 [wasm] 关键词的 commit
-git commit -m "feat: update wasm modules [wasm]"
+git add -A
+git commit -m "feat: update wasm modules build publish"
 git push origin main
 ```
-
-**重要**：提交信息必须包含 `[wasm]` 关键词才能触发发布流程。
+**重要**：提交信息必须包含 `build action` 或 `build publish` 才会触发 CI。
 
 ## CI/CD 流程详解
 
 ### 触发条件
 
-- 推送到 `main` 分支
-- 修改 `packages/` 目录下的文件
-- 提交信息包含 `[wasm]` 关键词（触发发布）
-- 手动触发 `workflow_dispatch`
+- 推送到 `main` 分支且 commit message 包含 `build action` 或 `build publish`
+- Pull Request 到 `main` 分支会自动执行编译校验
 
 ### 编译阶段（并行）
 
@@ -119,7 +109,7 @@ git push origin main
 
 ### 发布阶段
 
-**条件**：所有编译成功 + 提交信息包含 `[wasm]`
+**条件**：所有编译成功 + 提交信息包含 `build publish`
 
 1. **准备包**
    - 为每个模块生成 `package.json`
@@ -289,12 +279,13 @@ npm version major
 ## 最佳实践
 
 1. **提交信息规范**
-   - 使用 `[wasm]` 标记发布相关的 commit
-   - 示例：`feat: optimize matrix multiplication [wasm]`
+   - 构建使用 `build action`
+   - 发布使用 `build publish`
+   - 示例：`feat: optimize matrix multiplication build publish`
 
 2. **版本号管理**
-   - 每次发布前更新版本号
-   - 保持三个模块版本号同步
+   - 每次发布前执行 `python bump.py <version>`
+   - 保持所有模块版本号同步
 
 3. **测试**
    - 本地编译验证无误后再推送

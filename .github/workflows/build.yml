@@ -29,7 +29,7 @@ jobs:
           COMMIT_MSG: ${{ github.event.head_commit.message }}
         run: |
           MSG="$COMMIT_MSG"
-          VERSION="v0.1.0"
+          VERSION=$(node -p "require('./package.json').version")
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
           if [ "${{ github.event_name }}" = "pull_request" ]; then
@@ -51,33 +51,6 @@ jobs:
           echo "should_build=$BUILD" >> "$GITHUB_OUTPUT"
           echo "should_publish=$PUBLISH" >> "$GITHUB_OUTPUT"
 
-  # ── 生成语言统计 SVG ────────────────────────────────────────
-  generate-stats:
-    name: Generate Language Stats
-    needs: check
-    if: needs.check.outputs.should_build == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Generate SVG
-        run: python scripts/generate_lang_stats.py
-
-      - name: Commit SVG
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add docs/lang-stats.svg
-          git diff --cached --quiet || git commit -m "chore: update language statistics SVG"
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   # ── 编译 Rust WASM ────────────────────────────────────────
   build-rust:
     name: Build Rust WASM
@@ -94,12 +67,14 @@ jobs:
 
       - name: Install wasm-pack
         run: |
-          curl https://rustwasm.org/wasm-pack/installer/init.sh -sSf | sh
+          WASM_PACK_VERSION="0.13.1"
+          curl -fsSL "https://github.com/rustwasm/wasm-pack/releases/download/v${WASM_PACK_VERSION}/wasm-pack-v${WASM_PACK_VERSION}-x86_64-unknown-linux-musl.tar.gz" | tar xz
+          sudo mv "wasm-pack-v${WASM_PACK_VERSION}-x86_64-unknown-linux-musl/wasm-pack" /usr/local/bin/
 
       - name: Build Rust WASM
         working-directory: packages/wasm-lang-test-rust
         run: |
-          $HOME/.cargo/bin/wasm-pack build --target bundler --release
+          wasm-pack build --target bundler --release
 
       - name: Upload Rust artifact
         uses: actions/upload-artifact@v4
@@ -207,8 +182,9 @@ jobs:
 
       - name: Build Kotlin WASM
         working-directory: packages/wasm-lang-test-kotlin
+        shell: bash --noprofile --norc {0}
         run: |
-          ./gradlew wasmJsBrowserProductionWebpack
+          ./gradlew wasmJsBrowserProductionWebpack --no-daemon -Dorg.gradle.jvmargs="-Xmx2048M -XX:MaxMetaspaceSize=512M"
 
       - name: Upload Kotlin artifact
         uses: actions/upload-artifact@v4
