@@ -184,7 +184,7 @@ jobs:
       - name: Build Kotlin WASM
         working-directory: packages/wasm-lang-test-kotlin
         run: |
-          gradle assemble --no-daemon -Dorg.gradle.jvmargs="-Xmx2048M -XX:MaxMetaspaceSize=512M"
+          gradle wasmJsProductionExecutable --no-daemon -Dorg.gradle.jvmargs="-Xmx2048M -XX:MaxMetaspaceSize=512M"
 
       - name: Upload Kotlin artifact
         uses: actions/upload-artifact@v4
