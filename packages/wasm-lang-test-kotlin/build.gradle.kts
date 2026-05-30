@@ -6,6 +6,11 @@ plugins {
     kotlin("multiplatform") version "1.9.23"
 }
 
+repositories {
+    mavenCentral()
+    google()
+}
+
 @OptIn(ExperimentalWasmDsl::class)
 kotlin {
     wasmJs {
