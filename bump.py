@@ -4,18 +4,18 @@
 
 用途：
 - 自动更新所有配置文件中的版本号
-- 支持 patch、minor、major 三种版本更新
 - 一次性更新所有相关文件
 
 使用方法：
-  python bump.py patch   # 0.1.0 -> 0.1.1
-  python bump.py minor   # 0.1.0 -> 0.2.0
-  python bump.py major   # 0.1.0 -> 1.0.0
+  python bump.py 0.1.2          # 直接设置版本号
+  python bump.py --version 0.1.2
+  python bump.py -v 0.1.2
 """
 
 import sys
 import re
 import json
+import argparse
 from pathlib import Path
 
 
@@ -28,25 +28,6 @@ def parse_version(version_str):
 def format_version(major, minor, patch):
     """格式化版本号为字符串"""
     return f"{major}.{minor}.{patch}"
-
-
-def bump_version(version_str, bump_type):
-    """根据类型更新版本号"""
-    major, minor, patch = parse_version(version_str)
-
-    if bump_type == 'major':
-        major += 1
-        minor = 0
-        patch = 0
-    elif bump_type == 'minor':
-        minor += 1
-        patch = 0
-    elif bump_type == 'patch':
-        patch += 1
-    else:
-        raise ValueError(f"Unknown bump type: {bump_type}")
-
-    return format_version(major, minor, patch)
 
 
 def update_json_file(filepath, new_version):
@@ -68,7 +49,6 @@ def update_toml_file(filepath, new_version):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    # 匹配 version = "0.1.0" 格式
     content = re.sub(
         r'version\s*=\s*"[^"]*"',
         f'version = "{new_version}"',
@@ -86,7 +66,6 @@ def update_yaml_file(filepath, new_version):
     with open(filepath, 'r', encoding='utf-8') as f:
         content = f.read()
 
-    # 匹配 version: 0.1.0 格式
     content = re.sub(
         r'version:\s*[^\n]*',
         f'version: {new_version}',
@@ -100,13 +79,43 @@ def update_yaml_file(filepath, new_version):
 
 
 def main():
-    if len(sys.argv) != 2:
-        print("用法: python bump.py [patch|minor|major]")
+    parser = argparse.ArgumentParser(
+        description='版本号管理脚本',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog='''
+示例：
+  python bump.py 0.1.2
+  python bump.py --version 0.1.2
+  python bump.py -v 0.1.2
+        '''
+    )
+
+    parser.add_argument(
+        'version',
+        nargs='?',
+        help='目标版本号 (例: 0.1.2)'
+    )
+    parser.add_argument(
+        '--version', '-v',
+        dest='version_flag',
+        help='目标版本号 (例: 0.1.2)'
+    )
+
+    args = parser.parse_args()
+
+    # 获取版本号
+    new_version = args.version or args.version_flag
+
+    if not new_version:
+        parser.print_help()
         sys.exit(1)
 
-    bump_type = sys.argv[1].lower()
-    if bump_type not in ['patch', 'minor', 'major']:
-        print("错误: 只支持 patch、minor、major")
+    # 验证版本号格式
+    try:
+        parse_version(new_version)
+    except (ValueError, IndexError):
+        print(f"错误: 无效的版本号格式 '{new_version}'")
+        print("正确格式: X.Y.Z (例: 0.1.2)")
         sys.exit(1)
 
     # 获取当前版本
@@ -117,9 +126,8 @@ def main():
         current_data = json.load(f)
 
     current_version = current_data['version']
-    new_version = bump_version(current_version, bump_type)
 
-    print(f"\n📦 版本更新: {current_version} → {new_version} ({bump_type})\n")
+    print(f"\n📦 版本更新: {current_version} → {new_version}\n")
 
     # 需要更新的文件列表
     files_to_update = [
