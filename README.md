@@ -104,11 +104,11 @@ git push origin main
 
 已发布到 npm registry：
 
-- `@wasm-lang-test/rust` - Rust 实现
-- `@wasm-lang-test/go` - Go 实现
-- `@wasm-lang-test/cpp` - C++ 实现
-- `@wasm-lang-test/dart` - Dart 实现
-- `@wasm-lang-test/kotlin` - Kotlin 实现
+- [![npm](https://img.shields.io/npm/v/@wasm-lang-test/rust?color=cb3837&logo=npm)](https://www.npmjs.com/package/@wasm-lang-test/rust) `@wasm-lang-test/rust` — Rust 实现
+- [![npm](https://img.shields.io/npm/v/@wasm-lang-test/go?color=cb3837&logo=npm)](https://www.npmjs.com/package/@wasm-lang-test/go) `@wasm-lang-test/go` — Go 实现
+- [![npm](https://img.shields.io/npm/v/@wasm-lang-test/cpp?color=cb3837&logo=npm)](https://www.npmjs.com/package/@wasm-lang-test/cpp) `@wasm-lang-test/cpp` — C++ 实现
+- [![npm](https://img.shields.io/npm/v/@wasm-lang-test/dart?color=cb3837&logo=npm)](https://www.npmjs.com/package/@wasm-lang-test/dart) `@wasm-lang-test/dart` — Dart 实现
+- [![npm](https://img.shields.io/npm/v/@wasm-lang-test/kotlin?color=cb3837&logo=npm)](https://www.npmjs.com/package/@wasm-lang-test/kotlin) `@wasm-lang-test/kotlin` — Kotlin 实现
 
 ## 文档
 
