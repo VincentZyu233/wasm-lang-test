@@ -68,11 +68,11 @@ jobs:
       - name: Install wasm-pack
         run: |
           curl https://rustwasm.org/wasm-pack/installer/init.sh -sSf | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
       - name: Build Rust WASM
         working-directory: packages/wasm-lang-test-rust
         run: |
-          export PATH="$HOME/.cargo/bin:$PATH"
           wasm-pack build --target bundler --release
 
       - name: Upload Rust artifact
@@ -178,7 +178,7 @@ jobs:
       - name: Build Kotlin WASM
         working-directory: packages/wasm-lang-test-kotlin
         run: |
-          gradle wasmJsBrowserProductionWebpack
+          ./gradlew wasmJsBrowserProductionWebpack
 
       - name: Upload Kotlin artifact
         uses: actions/upload-artifact@v4

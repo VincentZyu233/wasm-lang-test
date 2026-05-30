@@ -1,7 +1,12 @@
+@file:Suppress("UNCHECKED_CAST")
+
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+
 plugins {
     kotlin("multiplatform") version "1.9.23"
 }
 
+@OptIn(ExperimentalWasmDsl::class)
 kotlin {
     wasmJs {
         browser()
