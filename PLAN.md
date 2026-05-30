@@ -40,11 +40,21 @@ python bump.py -v 0.1.2
 
 ```bash
 # 1. Modify code
+# (include wasm or ui)
 # 2. Update version + refresh docs/lang-stats.svg
 python bump.py 0.1.2
-# 3. Commit
+# 3. Check status
+git status
+# 4. Check diff
+git diff HEAD --stat
+# 5. Stage all
 git add -A
+# 6. Commit
 git commit -m "feat: description build publish"
+# 7. Check remote and branch
+git remote -v
+git branch -a
+# 8. Push
 git push origin main
 ```
 
@@ -99,40 +109,6 @@ Published to npm registry:
 - `@wasm-lang-test/cpp`
 - `@wasm-lang-test/dart`
 - `@wasm-lang-test/kotlin`
-
-## 🚀 Development Workflow
-
-### Modifying WASM Modules
-
-```bash
-# 1. Edit source code
-# 2. Test locally
-npm run build:wasm
-
-# 3. Update version + refresh SVG
-python bump.py 0.1.2
-
-# 4. Commit
-git add -A
-git commit -m "feat: optimization build publish"
-git push
-```
-
-### Modifying UI
-
-```bash
-# 1. Edit ui/ directory
-# 2. Start dev server
-npm run dev
-
-# 3. Update version + refresh SVG
-python bump.py 0.1.2
-
-# 4. Commit
-git add -A
-git commit -m "feat: ui improvements build action"
-git push
-```
 
 ## 📝 Code Standards
 
