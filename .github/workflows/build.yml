@@ -68,11 +68,12 @@ jobs:
       - name: Install wasm-pack
         run: |
           curl https://rustwasm.org/wasm-pack/installer/init.sh -sSf | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
       - name: Build Rust WASM
         working-directory: packages/wasm-lang-test-rust
-        run: wasm-pack build --target bundler --release
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          wasm-pack build --target bundler --release
 
       - name: Upload Rust artifact
         uses: actions/upload-artifact@v4
@@ -150,7 +151,7 @@ jobs:
         working-directory: packages/wasm-lang-test-dart
         run: |
           dart pub get
-          dart compile js -O4 -o dart_wasm.js lib/wasm_lang_test_dart.dart
+          dart compile js -O4 -o dart_wasm.js web/main.dart
 
       - name: Upload Dart artifact
         uses: actions/upload-artifact@v4
@@ -176,8 +177,7 @@ jobs:
       - name: Build Kotlin WASM
         working-directory: packages/wasm-lang-test-kotlin
         run: |
-          chmod +x gradlew
-          ./gradlew wasmJsBrowserProductionWebpack
+          gradle wasmJsBrowserProductionWebpack
 
       - name: Upload Kotlin artifact
         uses: actions/upload-artifact@v4
