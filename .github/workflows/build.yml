@@ -181,10 +181,15 @@ jobs:
         with:
           gradle-version: '8.5'
 
+      - name: List available Gradle tasks
+        working-directory: packages/wasm-lang-test-kotlin
+        run: |
+          gradle tasks --all 2>&1 | grep -i wasm || echo "No wasm tasks found"
+
       - name: Build Kotlin WASM
         working-directory: packages/wasm-lang-test-kotlin
         run: |
-          gradle wasmJsBrowserProductionWebpack --no-daemon -Dorg.gradle.jvmargs="-Xmx2048M -XX:MaxMetaspaceSize=512M"
+          gradle build --no-daemon -Dorg.gradle.jvmargs="-Xmx2048M -XX:MaxMetaspaceSize=512M"
 
       - name: Debug Kotlin build output
         working-directory: packages/wasm-lang-test-kotlin
