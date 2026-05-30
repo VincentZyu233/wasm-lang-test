@@ -1,5 +1,14 @@
 # wasm-lang-test 构建指南
 
+## GitHub CI 行为
+
+| 触发条件 | 编译 | 发布到 npm | 创建 Release |
+|---------|------|----------|------------|
+| 推送到 main | ✅ | ❌ | ❌ |
+| 推送到 main + `build action` | ✅ | ❌ | ❌ |
+| 推送到 main + `build publish` | ✅ | ✅ | ✅ |
+| 手动触发 (workflow_dispatch) | ✅ | ❌ | ❌ |
+
 ## 概述
 
 本项目使用 GitHub Actions 自动编译三种语言（C++、Go、Rust）的 WebAssembly 模块，并发布到 npm registry。每个模块都是独立的 npm 包，支持自动签名和版本管理。
