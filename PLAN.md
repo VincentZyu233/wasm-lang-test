@@ -42,7 +42,7 @@ python bump.py -v 0.1.8
 # 1. Modify code
 # (include wasm or ui)
 # 2. Update version + refresh docs/lang-stats.svg
-python bump.py 0.1.8
+python bump.py x.y.z # larger version
 # 3. Check status
 git status
 # 4. Check diff
