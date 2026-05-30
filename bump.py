@@ -79,6 +79,24 @@ def update_yaml_file(filepath, new_version):
     print(f"✓ Updated {filepath}")
 
 
+def update_xml_file(filepath, new_version):
+    """更新 XML 文件中的版本号"""
+    with open(filepath, 'r', encoding='utf-8') as f:
+        content = f.read()
+
+    content = re.sub(
+        r'<version>[^<]*</version>',
+        f'<version>{new_version}</version>',
+        content,
+        count=1
+    )
+
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+    print(f"✓ Updated {filepath}")
+
+
 def regenerate_lang_stats(root):
     """Regenerate the README SVG locally after bumping the version."""
     script_path = root / 'scripts' / 'generate_lang_stats.py'
@@ -147,6 +165,7 @@ def main():
         (root / 'ui' / 'package.json', 'json'),
         (root / 'packages' / 'wasm-lang-test-rust' / 'Cargo.toml', 'toml'),
         (root / 'packages' / 'wasm-lang-test-dart' / 'pubspec.yaml', 'yaml'),
+        (root / 'packages' / 'wasm-lang-test-kotlin' / 'pom.xml', 'xml'),
     ]
 
     # 更新所有文件
@@ -161,6 +180,8 @@ def main():
             update_toml_file(filepath, new_version)
         elif file_type == 'yaml':
             update_yaml_file(filepath, new_version)
+        elif file_type == 'xml':
+            update_xml_file(filepath, new_version)
 
     regenerate_lang_stats(root)
 
