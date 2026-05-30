@@ -7,12 +7,12 @@
 
 extern "C" {
 
-int _fibonacci(int n) {
+int fibonacci(int n) {
   if (n <= 1) return n;
-  return _fibonacci(n - 1) + _fibonacci(n - 2);
+  return fibonacci(n - 1) + fibonacci(n - 2);
 }
 
-void _quickSort(int* arr, int size) {
+void quickSort(int* arr, int size) {
   if (size <= 1) return;
   int pivot = arr[size / 2];
   int left = 0, right = size - 1;
@@ -27,11 +27,11 @@ void _quickSort(int* arr, int size) {
     }
   }
 
-  if (right > 0) _quickSort(arr, right + 1);
-  if (left < size) _quickSort(arr + left, size - left);
+  if (right > 0) quickSort(arr, right + 1);
+  if (left < size) quickSort(arr + left, size - left);
 }
 
-double* _matrixMultiply(int size) {
+double* matrixMultiply(int size) {
   double* a = new double[size * size];
   double* b = new double[size * size];
   double* c = new double[size * size];
@@ -56,7 +56,7 @@ double* _matrixMultiply(int size) {
   return c;
 }
 
-const char* _wordFrequency(const char* text) {
+const char* wordFrequency(const char* text) {
   std::map<std::string, int> freq;
   std::istringstream iss(text);
   std::string word;

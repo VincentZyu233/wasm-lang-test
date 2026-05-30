@@ -125,7 +125,8 @@ jobs:
         run: |
           emcc src/main.cpp -o main.js -s WASM=1 -O3 \
             -s EXPORTED_FUNCTIONS='["_fibonacci","_quickSort","_matrixMultiply","_wordFrequency"]' \
-            -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]'
+            -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]' \
+            --no-entry
 
       - name: Upload C++ artifact
         uses: actions/upload-artifact@v4
