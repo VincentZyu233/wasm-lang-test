@@ -364,27 +364,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Create Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ steps.version.outputs.version }}
-          release_name: Release v${{ steps.version.outputs.version }}
-          body: |
-            ## 📦 WASM Modules Published
 
-            - ✅ @wasm-lang-test/rust v${{ steps.version.outputs.version }}
-            - ✅ @wasm-lang-test/go v${{ steps.version.outputs.version }}
-            - ✅ @wasm-lang-test/cpp v${{ steps.version.outputs.version }}
-            - ✅ @wasm-lang-test/dart v${{ steps.version.outputs.version }}
-            - ✅ @wasm-lang-test/kotlin v${{ steps.version.outputs.version }}
-
-            Built and signed on GitHub Actions
-
-            ### Installation
-            ```bash
-            npm install @wasm-lang-test/rust @wasm-lang-test/go @wasm-lang-test/cpp @wasm-lang-test/dart @wasm-lang-test/kotlin
-            ```
-          draft: false
-          prerelease: false
