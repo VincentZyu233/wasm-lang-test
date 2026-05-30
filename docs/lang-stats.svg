@@ -1,62 +1,77 @@
-<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="364" viewBox="0 0 480 364">
   <defs>
     <style>
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      .lang-segment { animation: fadeIn 0.5s ease-in-out forwards; }
-      .lang-label { font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; }
-      .lang-percent { font-family: Arial, sans-serif; font-size: 11px; }
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@400;600&display=swap');
+      .bg { fill: #0d1117; }
+      .title { font-family: 'Noto Sans Mono', monospace; font-size: 16px; font-weight: 600; fill: #64b5f6; }
+      .subtitle { font-family: 'Noto Sans Mono', monospace; font-size: 11px; fill: #8b949e; }
+      .lang-name { font-family: 'Noto Sans Mono', monospace; font-size: 14px; fill: #e6edf3; }
+      .lang-pct { font-family: 'Noto Sans Mono', monospace; font-size: 13px; fill: #8b949e; }
+      .bar-bg { fill: #161b22; }
+      @keyframes fadeInRight { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+      @keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+      .row { animation: fadeInRight 0.6s ease forwards; opacity: 0; }
+      .title-anim { animation: fadeInDown 0.8s ease forwards; opacity: 0; }
     </style>
   </defs>
 
-  <!-- Title -->
-  <text x="200" y="30" text-anchor="middle" style="font-size: 20px; font-weight: bold;">Language Distribution</text>
-  <text x="200" y="50" text-anchor="middle" style="font-size: 12px; fill: #666;">by bytes</text>
-  <circle cx="200" cy="250" r="80" fill="#FF6B6B" opacity="0.8"
-    style="animation: fadeIn 0.5s ease-in-out 0.0s both;" />
-  <circle cx="200" cy="250" r="80" fill="#4ECDC4" opacity="0.8"
-    style="animation: fadeIn 0.5s ease-in-out 0.1s both;" />
-  <circle cx="200" cy="250" r="80" fill="#45B7D1" opacity="0.8"
-    style="animation: fadeIn 0.5s ease-in-out 0.2s both;" />
-  <circle cx="200" cy="250" r="80" fill="#FFA07A" opacity="0.8"
-    style="animation: fadeIn 0.5s ease-in-out 0.30000000000000004s both;" />
-  <circle cx="200" cy="250" r="80" fill="#98D8C8" opacity="0.8"
-    style="animation: fadeIn 0.5s ease-in-out 0.4s both;" />
-  <circle cx="200" cy="250" r="80" fill="#F7DC6F" opacity="0.8"
-    style="animation: fadeIn 0.5s ease-in-out 0.5s both;" />
-  <circle cx="200" cy="250" r="80" fill="#BB8FCE" opacity="0.8"
-    style="animation: fadeIn 0.5s ease-in-out 0.6000000000000001s both;" />
-  <circle cx="200" cy="250" r="80" fill="#85C1E2" opacity="0.8"
-    style="animation: fadeIn 0.5s ease-in-out 0.7000000000000001s both;" />
-  <circle cx="200" cy="250" r="80" fill="#FF6B6B" opacity="0.8"
-    style="animation: fadeIn 0.5s ease-in-out 0.8s both;" />
-  <rect x="20" y="350" width="12" height="12" fill="#FF6B6B" />
-  <text x="38" y="360" class="lang-label">Markdown</text>
-  <text x="38" y="372" class="lang-percent">53.2% (18,019 bytes)</text>
-  <rect x="220" y="350" width="12" height="12" fill="#4ECDC4" />
-  <text x="238" y="360" class="lang-label">JavaScript</text>
-  <text x="238" y="372" class="lang-percent">19.3% (6,540 bytes)</text>
-  <rect x="20" y="375" width="12" height="12" fill="#45B7D1" />
-  <text x="38" y="385" class="lang-label">C++</text>
-  <text x="38" y="397" class="lang-percent">5.5% (1,862 bytes)</text>
-  <rect x="220" y="375" width="12" height="12" fill="#FFA07A" />
-  <text x="238" y="385" class="lang-label">Rust</text>
-  <text x="238" y="397" class="lang-percent">5.4% (1,823 bytes)</text>
-  <rect x="20" y="400" width="12" height="12" fill="#98D8C8" />
-  <text x="38" y="410" class="lang-label">Go</text>
-  <text x="38" y="422" class="lang-percent">4.8% (1,632 bytes)</text>
-  <rect x="220" y="400" width="12" height="12" fill="#F7DC6F" />
-  <text x="238" y="410" class="lang-label">Dart</text>
-  <text x="238" y="422" class="lang-percent">4.7% (1,596 bytes)</text>
-  <rect x="20" y="425" width="12" height="12" fill="#BB8FCE" />
-  <text x="38" y="435" class="lang-label">Kotlin</text>
-  <text x="38" y="447" class="lang-percent">4.3% (1,446 bytes)</text>
-  <rect x="220" y="425" width="12" height="12" fill="#85C1E2" />
-  <text x="238" y="435" class="lang-label">JSON</text>
-  <text x="238" y="447" class="lang-percent">2.3% (772 bytes)</text>
-  <rect x="20" y="450" width="12" height="12" fill="#FF6B6B" />
-  <text x="38" y="460" class="lang-label">YAML</text>
-  <text x="38" y="472" class="lang-percent">0.5% (168 bytes)</text>
+  <rect class="bg" width="480" height="364"/>
+
+  <text class="title title-anim" x="20" y="30">📊 wasm-lang-test · Code Distribution</text>
+  <text class="subtitle title-anim" style="animation-delay: 0.2s;" x="20" y="48">Total: 14.9 KB</text>
+  <text class="subtitle title-anim" style="animation-delay: 0.3s;" x="20" y="68">Updated: 2026-05-30 15:19:18 UTC</text>
+  <g class="row" style="animation-delay: 0.4s;">
+    <circle cx="30" cy="136.0" r="6" fill="#f1e05a"/>
+    <text class="lang-name" x="44" y="140.0">JavaScript</text>
+    <rect class="bar-bg" x="160" y="124" width="280" height="24" rx="4"/>
+    <rect x="160" y="124" width="0" height="24" rx="4" fill="#f1e05a" opacity="0.85">
+      <animate attributeName="width" from="0" to="280.0" dur="0.8s" begin="0.4s" fill="freeze"/>
+    </rect>
+    <text class="lang-pct" x="450" y="140.0" text-anchor="end">43.9%</text>
+  </g>
+  <g class="row" style="animation-delay: 0.5s;">
+    <circle cx="30" cy="170.0" r="6" fill="#f34b7d"/>
+    <text class="lang-name" x="44" y="174.0">C++</text>
+    <rect class="bar-bg" x="160" y="158" width="280" height="24" rx="4"/>
+    <rect x="160" y="158" width="0" height="24" rx="4" fill="#f34b7d" opacity="0.85">
+      <animate attributeName="width" from="0" to="79.71865443425077" dur="0.8s" begin="0.5s" fill="freeze"/>
+    </rect>
+    <text class="lang-pct" x="450" y="174.0" text-anchor="end">12.5%</text>
+  </g>
+  <g class="row" style="animation-delay: 0.6s;">
+    <circle cx="30" cy="204.0" r="6" fill="#dea584"/>
+    <text class="lang-name" x="44" y="208.0">Rust</text>
+    <rect class="bar-bg" x="160" y="192" width="280" height="24" rx="4"/>
+    <rect x="160" y="192" width="0" height="24" rx="4" fill="#dea584" opacity="0.85">
+      <animate attributeName="width" from="0" to="78.04892966360856" dur="0.8s" begin="0.6000000000000001s" fill="freeze"/>
+    </rect>
+    <text class="lang-pct" x="450" y="208.0" text-anchor="end">12.2%</text>
+  </g>
+  <g class="row" style="animation-delay: 0.7s;">
+    <circle cx="30" cy="238.0" r="6" fill="#00ADD8"/>
+    <text class="lang-name" x="44" y="242.0">Go</text>
+    <rect class="bar-bg" x="160" y="226" width="280" height="24" rx="4"/>
+    <rect x="160" y="226" width="0" height="24" rx="4" fill="#00ADD8" opacity="0.85">
+      <animate attributeName="width" from="0" to="69.87155963302753" dur="0.8s" begin="0.7000000000000001s" fill="freeze"/>
+    </rect>
+    <text class="lang-pct" x="450" y="242.0" text-anchor="end">11.0%</text>
+  </g>
+  <g class="row" style="animation-delay: 0.8s;">
+    <circle cx="30" cy="272.0" r="6" fill="#00B4AB"/>
+    <text class="lang-name" x="44" y="276.0">Dart</text>
+    <rect class="bar-bg" x="160" y="260" width="280" height="24" rx="4"/>
+    <rect x="160" y="260" width="0" height="24" rx="4" fill="#00B4AB" opacity="0.85">
+      <animate attributeName="width" from="0" to="68.3302752293578" dur="0.8s" begin="0.8s" fill="freeze"/>
+    </rect>
+    <text class="lang-pct" x="450" y="276.0" text-anchor="end">10.7%</text>
+  </g>
+  <g class="row" style="animation-delay: 0.9s;">
+    <circle cx="30" cy="306.0" r="6" fill="#A97BFF"/>
+    <text class="lang-name" x="44" y="310.0">Kotlin</text>
+    <rect class="bar-bg" x="160" y="294" width="280" height="24" rx="4"/>
+    <rect x="160" y="294" width="0" height="24" rx="4" fill="#A97BFF" opacity="0.85">
+      <animate attributeName="width" from="0" to="61.90825688073395" dur="0.8s" begin="0.9s" fill="freeze"/>
+    </rect>
+    <text class="lang-pct" x="450" y="310.0" text-anchor="end">9.7%</text>
+  </g>
 </svg>
