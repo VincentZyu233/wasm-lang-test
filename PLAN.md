@@ -1,62 +1,62 @@
 <!--
-  PLAN.md - AI 助手通用项目规划文件
+  PLAN.md - Universal AI Assistant Project Guide
 
-  本文件为所有 AI 助手（Claude、Gemini、GPT 等）提供项目特定的指导和规范。
-  所有 AI 工具应在开始工作前读取此文件。
+  This file provides project-specific guidance for all AI assistants (Claude, Gemini, GPT, etc.).
+  All AI tools should read this file before starting work.
 -->
 
-# wasm-lang-test 项目规划
+# wasm-lang-test Project Plan
 
-## 🎯 项目概述
+## 🎯 Project Overview
 
-对比 C++、Go、Rust、Dart、Kotlin 五种语言在 WebAssembly 中的性能表现。
+Performance comparison of C++, Go, Rust, Dart, and Kotlin in WebAssembly.
 
-## 📋 版本管理规范（必读）
+## 📋 Version Management (REQUIRED)
 
-**重要**：所有代码修改前必须先更新版本号。
+**Important**: Update version number before any code changes.
 
-### 版本更新方式
+### Version Update Method
 
 ```bash
-# 直接指定版本号
+# Direct version specification
 python bump.py 0.1.2
 python bump.py --version 0.1.2
 python bump.py -v 0.1.2
 ```
 
-### 自动更新的文件
+### Auto-Updated Files
 
-- `package.json` (根目录)
+- `package.json` (root)
 - `ui/package.json`
 - `packages/wasm-lang-test-rust/Cargo.toml`
 - `packages/wasm-lang-test-dart/pubspec.yaml`
 
-### 标准工作流
+### Standard Workflow
 
 ```bash
-# 1. 修改代码
-# 2. 更新版本号
+# 1. Modify code
+# 2. Update version
 python bump.py 0.1.2
 
-# 3. 提交
+# 3. Commit
 git add -A
 git commit -m "feat: description build publish"
 git push origin main
 ```
 
-## 🔑 CI/CD 关键词
+## 🔑 CI/CD Keywords
 
-### 提交信息关键词
+### Commit Message Keywords
 
-- `build action` - 仅编译（不发布）
-- `build publish` - 编译 + 发布到 npm
+- `build action` - Build only (no publish)
+- `build publish` - Build + publish to npm
 
-示例：
+Example:
 ```bash
 git commit -m "feat: optimize matrix multiplication build publish"
 ```
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 wasm-lang-test/
@@ -66,27 +66,27 @@ wasm-lang-test/
 │   ├── wasm-lang-test-rust/
 │   ├── wasm-lang-test-dart/
 │   └── wasm-lang-test-kotlin/
-├── ui/                    # Web UI（不发布到 npm）
+├── ui/                    # Web UI (not published to npm)
 ├── .github/workflows/
-│   └── build.yml         # CI/CD 配置
+│   └── build.yml         # CI/CD configuration
 ├── docs/
-├── bump.py               # 版本管理脚本
-├── PLAN.md               # 本文件（通用规划）
-├── CLAUDE.md             # Claude 特定配置
-├── GEMINI.md             # Gemini 特定配置
+├── bump.py               # Version management script
+├── PLAN.md               # This file (universal guide)
+├── CLAUDE.md             # Claude-specific config
+├── GEMINI.md             # Gemini-specific config
 └── README.md
 ```
 
-## 🧪 四个测试题目
+## 🧪 Four Benchmark Tests
 
-1. **斐波那契** - 递归密集型 (fib(35))
-2. **快速排序** - 内存操作 (100,000 个数)
-3. **矩阵乘法** - 计算密集型 (512×512)
-4. **字符串处理** - 文本处理 (单词频率)
+1. **Fibonacci** - Recursion-intensive (fib(35))
+2. **Quick Sort** - Memory operations (100,000 numbers)
+3. **Matrix Multiplication** - Compute-intensive (512×512)
+4. **String Processing** - Text processing (word frequency)
 
-## 📦 npm 包
+## 📦 NPM Packages
 
-发布到 npm registry：
+Published to npm registry:
 
 - `@wasm-lang-test/rust`
 - `@wasm-lang-test/go`
@@ -94,67 +94,67 @@ wasm-lang-test/
 - `@wasm-lang-test/dart`
 - `@wasm-lang-test/kotlin`
 
-## 🚀 开发工作流
+## 🚀 Development Workflow
 
-### 修改 WASM 模块
+### Modifying WASM Modules
 
 ```bash
-# 1. 编辑源代码
-# 2. 本地编译测试
+# 1. Edit source code
+# 2. Test locally
 npm run build:wasm
 
-# 3. 更新版本
+# 3. Update version
 python bump.py 0.1.2
 
-# 4. 提交
+# 4. Commit
 git add -A
 git commit -m "feat: optimization build publish"
 git push
 ```
 
-### 修改 UI
+### Modifying UI
 
 ```bash
-# 1. 编辑 ui/ 目录
-# 2. 启动开发服务器
+# 1. Edit ui/ directory
+# 2. Start dev server
 npm run dev
 
-# 3. 更新版本
+# 3. Update version
 python bump.py 0.1.2
 
-# 4. 提交
+# 4. Commit
 git add -A
 git commit -m "feat: ui improvements build action"
 git push
 ```
 
-## 📝 代码规范
+## 📝 Code Standards
 
 ### HTML/CSS/JS
 
-- 添加详细的文件头注释（30+ 行）
-- 每个函数/类都有 JSDoc 注释
-- 使用中文注释说明功能
+- Add detailed file header comments (30+ lines)
+- JSDoc comments for all functions/classes
+- Use English comments for clarity
 
-### 其他语言
+### Other Languages
 
-- 遵循各语言的标准规范
-- 添加必要的注释说明算法
+- Follow language-specific standards
+- Add necessary algorithm comments
 
-## 🔗 重要文件
+## 🔗 Important Files
 
-- `docs/build.md` - 构建和发布指南
-- `docs/dev/20260530.cpp-go-rust.plan.md` - 项目规划
-- `README.md` - 快速开始指南
-- `.gitignore` - Git 忽略规则
+- `docs/build.md` - Build and publish guide
+- `docs/dev/20260530.cpp-go-rust.plan.md` - Project planning
+- `README.md` - Quick start guide
+- `.gitignore` - Git ignore rules
 
-## ⚠️ 常见问题
+## ⚠️ FAQ
 
-### Q: 忘记更新版本号怎么办？
+### Q: Forgot to update version?
 
-A: 使用 `git amend` 修改最后一个 commit，然后重新运行 `bump.py`。
+A: Use `git amend` to modify the last commit, then re-run `bump.py`.
 
-### Q: 如何本地测试 WASM 模块？
+### Q: How to test WASM modules locally?
 
 A:
 ```bash
@@ -163,15 +163,15 @@ npm run build:wasm
 npm run dev
 ```
 
-### Q: 如何手动发布到 npm？
+### Q: How to manually publish to npm?
 
-A: 详见 `docs/build.md` 中的"手动发布"部分。
+A: See "Manual Publishing" section in `docs/build.md`.
 
-## 📞 联系方式
+## 📞 Contact
 
 GitHub: https://github.com/VincentZyu233/wasm-lang-test
 
 ---
 
-**最后更新**: 2026-05-30
-**当前版本**: 0.1.2
+**Last Updated**: 2026-05-30
+**Current Version**: 0.1.2
