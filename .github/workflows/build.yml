@@ -95,12 +95,11 @@ jobs:
       - name: Install wasm-pack
         run: |
           curl https://rustwasm.org/wasm-pack/installer/init.sh -sSf | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
       - name: Build Rust WASM
         working-directory: packages/wasm-lang-test-rust
         run: |
-          wasm-pack build --target bundler --release
+          $HOME/.cargo/bin/wasm-pack build --target bundler --release
 
       - name: Upload Rust artifact
         uses: actions/upload-artifact@v4
@@ -201,6 +200,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+
+      - name: Make gradlew executable
+        working-directory: packages/wasm-lang-test-kotlin
+        run: chmod +x gradlew
 
       - name: Build Kotlin WASM
         working-directory: packages/wasm-lang-test-kotlin
