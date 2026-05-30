@@ -1,3 +1,2 @@
 #!/bin/bash
-cd "$(dirname "$0")"
-./gradlew "$@"
+# This project has been migrated to Maven. Use 'mvn' instead of gradle.
