@@ -14,7 +14,12 @@ repositories {
 @OptIn(ExperimentalWasmDsl::class)
 kotlin {
     wasmJs {
-        browser()
+        browser {
+            webpackTask {
+                output.libraryTarget = "umd"
+            }
+        }
+        binaries.executable()
     }
 
     sourceSets {
