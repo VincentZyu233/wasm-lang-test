@@ -232,6 +232,7 @@ jobs:
         run: |
           mkdir -p npm-packages/@wasm-lang-test/rust
           cp artifacts/rust-wasm/* npm-packages/@wasm-lang-test/rust/
+          cp README.md npm-packages/@wasm-lang-test/rust/README.md
           cat > npm-packages/@wasm-lang-test/rust/package.json << 'PKGJSON'
           {
             "name": "@wasm-lang-test/rust",
@@ -254,6 +255,7 @@ jobs:
         run: |
           mkdir -p npm-packages/@wasm-lang-test/go
           cp artifacts/go-wasm/wasm_exec.wasm npm-packages/@wasm-lang-test/go/
+          cp README.md npm-packages/@wasm-lang-test/go/README.md
           cat > npm-packages/@wasm-lang-test/go/package.json << 'PKGJSON'
           {
             "name": "@wasm-lang-test/go",
@@ -275,6 +277,7 @@ jobs:
         run: |
           mkdir -p npm-packages/@wasm-lang-test/cpp
           cp artifacts/cpp-wasm/main.wasm npm-packages/@wasm-lang-test/cpp/
+          cp README.md npm-packages/@wasm-lang-test/cpp/README.md
           cat > npm-packages/@wasm-lang-test/cpp/package.json << 'PKGJSON'
           {
             "name": "@wasm-lang-test/cpp",
@@ -296,6 +299,7 @@ jobs:
         run: |
           mkdir -p npm-packages/@wasm-lang-test/dart
           cp artifacts/dart-wasm/dart_wasm.js npm-packages/@wasm-lang-test/dart/
+          cp README.md npm-packages/@wasm-lang-test/dart/README.md
           cat > npm-packages/@wasm-lang-test/dart/package.json << 'PKGJSON'
           {
             "name": "@wasm-lang-test/dart",
@@ -317,6 +321,7 @@ jobs:
         run: |
           mkdir -p npm-packages/@wasm-lang-test/kotlin
           cp -r artifacts/kotlin-wasm/* npm-packages/@wasm-lang-test/kotlin/
+          cp README.md npm-packages/@wasm-lang-test/kotlin/README.md
           cat > npm-packages/@wasm-lang-test/kotlin/package.json << 'PKGJSON'
           {
             "name": "@wasm-lang-test/kotlin",

@@ -6,7 +6,7 @@
 
     <groupId>com.wasm-lang-test</groupId>
     <artifactId>wasm-lang-test-kotlin</artifactId>
-    <version>0.1.17</version>
+    <version>0.1.18</version>
     <packaging>jar</packaging>
 
     <properties>
