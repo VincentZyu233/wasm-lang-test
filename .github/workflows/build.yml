@@ -176,17 +176,15 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Make gradlew executable
-        working-directory: packages/wasm-lang-test-kotlin
-        run: chmod +x gradlew
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: '8.10'
 
       - name: Build Kotlin WASM
         working-directory: packages/wasm-lang-test-kotlin
         run: |
-          for key in $(env | grep '^BASH_FUNC_' | cut -d= -f1); do
-            unset "$key" 2>/dev/null || true
-          done
-          ./gradlew wasmJsBrowserProductionWebpack --no-daemon -Dorg.gradle.jvmargs="-Xmx2048M -XX:MaxMetaspaceSize=512M"
+          gradle wasmJsBrowserProductionWebpack --no-daemon -Dorg.gradle.jvmargs="-Xmx2048M -XX:MaxMetaspaceSize=512M"
 
       - name: Upload Kotlin artifact
         uses: actions/upload-artifact@v4

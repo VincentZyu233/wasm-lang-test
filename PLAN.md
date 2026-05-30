@@ -42,7 +42,6 @@ python bump.py -v 0.1.2
 # 1. Modify code
 # 2. Update version + refresh docs/lang-stats.svg
 python bump.py 0.1.2
-
 # 3. Commit
 git add -A
 git commit -m "feat: description build publish"
