@@ -181,14 +181,10 @@ jobs:
         with:
           gradle-version: '8.5'
 
-      - name: Make gradlew executable
-        working-directory: packages/wasm-lang-test-kotlin
-        run: chmod +x gradlew
-
       - name: Build Kotlin WASM
         working-directory: packages/wasm-lang-test-kotlin
         run: |
-          ./gradlew wasmJsBrowserProductionWebpack --no-daemon -Dorg.gradle.jvmargs="-Xmx1536M"
+          gradle assemble --no-daemon -Dorg.gradle.jvmargs="-Xmx2048M -XX:MaxMetaspaceSize=512M"
 
       - name: Upload Kotlin artifact
         uses: actions/upload-artifact@v4

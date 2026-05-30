@@ -16,10 +16,8 @@
 # 克隆项目
 git clone https://github.com/VincentZyu233/wasm-lang-test.git
 cd wasm-lang-test
-
 # 安装依赖（包括已发布的 wasm 模块）
 npm install
-
 # 启动开发服务器
 npm run dev
 ```
@@ -41,7 +39,6 @@ npm run dev
 ```bash
 # 编译所有 wasm 模块
 npm run build:wasm
-
 # 或单独编译
 cd packages/wasm-lang-test-rust && wasm-pack build --target bundler --release
 cd packages/wasm-lang-test-go && GOOS=js GOARCH=wasm go build -o wasm_exec.wasm ./cmd/main.go
@@ -91,11 +88,9 @@ wasm-lang-test/
 
 ```bash
 # 先 bump 版本，并自动更新 docs/lang-stats.svg
-python bump.py 0.1.2
-
+python bump.py 0.1.8
 # 仅编译
 git commit -m "feat: xxx build action"
-
 # 编译 + 发布到 npm
 git commit -m "feat: xxx build publish"
 git push origin main
@@ -115,28 +110,6 @@ git push origin main
 - `@wasm-lang-test/dart` - Dart 实现
 - `@wasm-lang-test/kotlin` - Kotlin 实现
 
-## 开发
-
-### 修改 wasm 模块
-
-1. 编辑对应语言的源代码
-2. 本地编译：`npm run build:wasm`
-3. 测试 UI：`npm run dev`
-4. 更新版本并自动刷新 SVG：`python bump.py 0.1.2`
-5. 提交并推送：`git commit -m "feat: xxx build publish"`
-
-### 修改 UI
-
-1. 编辑 `ui/` 目录下的文件
-2. 启动开发服务器：`npm run dev`
-3. 如需发版，执行：`python bump.py 0.1.2`
-4. 提交：`git commit -m "feat: ui improvements build action"`
-
 ## 文档
 
 - [构建指南](docs/build.md) - npm token 配置、CI/CD 详解
-- [项目规划](docs/dev/20260530.cpp-go-rust.plan.md) - 项目设计和架构
-
-## 许可证
-
-MIT
