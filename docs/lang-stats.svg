@@ -1,0 +1,62 @@
+<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .lang-segment { animation: fadeIn 0.5s ease-in-out forwards; }
+      .lang-label { font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; }
+      .lang-percent { font-family: Arial, sans-serif; font-size: 11px; }
+    </style>
+  </defs>
+
+  <!-- Title -->
+  <text x="200" y="30" text-anchor="middle" style="font-size: 20px; font-weight: bold;">Language Distribution</text>
+  <text x="200" y="50" text-anchor="middle" style="font-size: 12px; fill: #666;">by bytes</text>
+  <circle cx="200" cy="250" r="80" fill="#FF6B6B" opacity="0.8"
+    style="animation: fadeIn 0.5s ease-in-out 0.0s both;" />
+  <circle cx="200" cy="250" r="80" fill="#4ECDC4" opacity="0.8"
+    style="animation: fadeIn 0.5s ease-in-out 0.1s both;" />
+  <circle cx="200" cy="250" r="80" fill="#45B7D1" opacity="0.8"
+    style="animation: fadeIn 0.5s ease-in-out 0.2s both;" />
+  <circle cx="200" cy="250" r="80" fill="#FFA07A" opacity="0.8"
+    style="animation: fadeIn 0.5s ease-in-out 0.30000000000000004s both;" />
+  <circle cx="200" cy="250" r="80" fill="#98D8C8" opacity="0.8"
+    style="animation: fadeIn 0.5s ease-in-out 0.4s both;" />
+  <circle cx="200" cy="250" r="80" fill="#F7DC6F" opacity="0.8"
+    style="animation: fadeIn 0.5s ease-in-out 0.5s both;" />
+  <circle cx="200" cy="250" r="80" fill="#BB8FCE" opacity="0.8"
+    style="animation: fadeIn 0.5s ease-in-out 0.6000000000000001s both;" />
+  <circle cx="200" cy="250" r="80" fill="#85C1E2" opacity="0.8"
+    style="animation: fadeIn 0.5s ease-in-out 0.7000000000000001s both;" />
+  <circle cx="200" cy="250" r="80" fill="#FF6B6B" opacity="0.8"
+    style="animation: fadeIn 0.5s ease-in-out 0.8s both;" />
+  <rect x="20" y="350" width="12" height="12" fill="#FF6B6B" />
+  <text x="38" y="360" class="lang-label">Markdown</text>
+  <text x="38" y="372" class="lang-percent">53.2% (18,019 bytes)</text>
+  <rect x="220" y="350" width="12" height="12" fill="#4ECDC4" />
+  <text x="238" y="360" class="lang-label">JavaScript</text>
+  <text x="238" y="372" class="lang-percent">19.3% (6,540 bytes)</text>
+  <rect x="20" y="375" width="12" height="12" fill="#45B7D1" />
+  <text x="38" y="385" class="lang-label">C++</text>
+  <text x="38" y="397" class="lang-percent">5.5% (1,862 bytes)</text>
+  <rect x="220" y="375" width="12" height="12" fill="#FFA07A" />
+  <text x="238" y="385" class="lang-label">Rust</text>
+  <text x="238" y="397" class="lang-percent">5.4% (1,823 bytes)</text>
+  <rect x="20" y="400" width="12" height="12" fill="#98D8C8" />
+  <text x="38" y="410" class="lang-label">Go</text>
+  <text x="38" y="422" class="lang-percent">4.8% (1,632 bytes)</text>
+  <rect x="220" y="400" width="12" height="12" fill="#F7DC6F" />
+  <text x="238" y="410" class="lang-label">Dart</text>
+  <text x="238" y="422" class="lang-percent">4.7% (1,596 bytes)</text>
+  <rect x="20" y="425" width="12" height="12" fill="#BB8FCE" />
+  <text x="38" y="435" class="lang-label">Kotlin</text>
+  <text x="38" y="447" class="lang-percent">4.3% (1,446 bytes)</text>
+  <rect x="220" y="425" width="12" height="12" fill="#85C1E2" />
+  <text x="238" y="435" class="lang-label">JSON</text>
+  <text x="238" y="447" class="lang-percent">2.3% (772 bytes)</text>
+  <rect x="20" y="450" width="12" height="12" fill="#FF6B6B" />
+  <text x="38" y="460" class="lang-label">YAML</text>
+  <text x="38" y="472" class="lang-percent">0.5% (168 bytes)</text>
+</svg>
