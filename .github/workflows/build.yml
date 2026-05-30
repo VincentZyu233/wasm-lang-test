@@ -132,10 +132,63 @@ jobs:
           name: cpp-wasm
           path: packages/wasm-lang-test-cpp/main.wasm
 
+  # ── 编译 Dart WASM ────────────────────────────────────────
+  build-dart:
+    name: Build Dart WASM
+    needs: check
+    if: needs.check.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
+      - name: Build Dart WASM
+        working-directory: packages/wasm-lang-test-dart
+        run: |
+          dart pub get
+          dart compile js -O4 -o dart_wasm.js lib/wasm_lang_test_dart.dart
+
+      - name: Upload Dart artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dart-wasm
+          path: packages/wasm-lang-test-dart/dart_wasm.js
+
+  # ── 编译 Kotlin WASM ────────────────────────────────────────
+  build-kotlin:
+    name: Build Kotlin WASM
+    needs: check
+    if: needs.check.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Kotlin WASM
+        working-directory: packages/wasm-lang-test-kotlin
+        run: |
+          chmod +x gradlew
+          ./gradlew wasmJsBrowserProductionWebpack
+
+      - name: Upload Kotlin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kotlin-wasm
+          path: packages/wasm-lang-test-kotlin/build/dist/wasmJs/productionExecutable/
+
   # ── 发布到 npm ────────────────────────────────────────
   publish-npm:
     name: Publish to npm
-    needs: [check, build-rust, build-go, build-cpp]
+    needs: [check, build-rust, build-go, build-cpp, build-dart, build-kotlin]
     if: needs.check.outputs.should_publish == 'true'
     runs-on: ubuntu-latest
 
@@ -210,6 +263,40 @@ jobs:
           }
           PKGJSON
 
+      - name: Prepare Dart package
+        run: |
+          mkdir -p npm-packages/@wasm-lang-test/dart
+          cp artifacts/dart-wasm/dart_wasm.js npm-packages/@wasm-lang-test/dart/
+          cat > npm-packages/@wasm-lang-test/dart/package.json << 'PKGJSON'
+          {
+            "name": "@wasm-lang-test/dart",
+            "version": "${{ steps.version.outputs.version }}",
+            "description": "Dart WASM benchmark module",
+            "main": "dart_wasm.js",
+            "files": ["*.js"],
+            "publishConfig": {
+              "access": "public"
+            }
+          }
+          PKGJSON
+
+      - name: Prepare Kotlin package
+        run: |
+          mkdir -p npm-packages/@wasm-lang-test/kotlin
+          cp -r artifacts/kotlin-wasm/* npm-packages/@wasm-lang-test/kotlin/
+          cat > npm-packages/@wasm-lang-test/kotlin/package.json << 'PKGJSON'
+          {
+            "name": "@wasm-lang-test/kotlin",
+            "version": "${{ steps.version.outputs.version }}",
+            "description": "Kotlin WASM benchmark module",
+            "main": "index.js",
+            "files": ["*.js", "*.wasm"],
+            "publishConfig": {
+              "access": "public"
+            }
+          }
+          PKGJSON
+
       - name: Publish Rust package
         working-directory: npm-packages/@wasm-lang-test/rust
         run: npm publish --provenance --access public
@@ -224,6 +311,18 @@ jobs:
 
       - name: Publish C++ package
         working-directory: npm-packages/@wasm-lang-test/cpp
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish Dart package
+        working-directory: npm-packages/@wasm-lang-test/dart
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish Kotlin package
+        working-directory: npm-packages/@wasm-lang-test/kotlin
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -252,12 +351,14 @@ jobs:
             - ✅ @wasm-lang-test/rust v${{ steps.version.outputs.version }}
             - ✅ @wasm-lang-test/go v${{ steps.version.outputs.version }}
             - ✅ @wasm-lang-test/cpp v${{ steps.version.outputs.version }}
+            - ✅ @wasm-lang-test/dart v${{ steps.version.outputs.version }}
+            - ✅ @wasm-lang-test/kotlin v${{ steps.version.outputs.version }}
 
             Built and signed on GitHub Actions
 
             ### Installation
             ```bash
-            npm install @wasm-lang-test/rust @wasm-lang-test/go @wasm-lang-test/cpp
+            npm install @wasm-lang-test/rust @wasm-lang-test/go @wasm-lang-test/cpp @wasm-lang-test/dart @wasm-lang-test/kotlin
             ```
           draft: false
           prerelease: false
