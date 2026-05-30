@@ -2,6 +2,10 @@
 
 🚀 对比 C++、Go、Rust、Dart、Kotlin 五种语言在 WebAssembly 中的性能表现。
 
+## 📊 语言分布
+
+![Language Distribution](docs/lang-stats.svg)
+
 ## 快速开始
 
 ### 方式 1：使用已发布的 npm 包（推荐）

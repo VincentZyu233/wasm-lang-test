@@ -2,12 +2,12 @@
 
 ## GitHub CI 行为
 
-| 触发条件 | 编译 | 发布到 npm | 创建 Release |
-|---------|------|----------|------------|
-| 推送到 main | ✅ | ❌ | ❌ |
-| 推送到 main + `build action` | ✅ | ❌ | ❌ |
-| 推送到 main + `build publish` | ✅ | ✅ | ✅ |
-| 手动触发 (workflow_dispatch) | ✅ | ❌ | ❌ |
+| 触发条件 | 编译 | 生成 SVG | 发布到 npm | 创建 Release |
+|---------|------|---------|----------|------------|
+| 推送到 main | ✅ | ✅ | ❌ | ❌ |
+| 推送到 main + `build action` | ✅ | ✅ | ❌ | ❌ |
+| 推送到 main + `build publish` | ✅ | ✅ | ✅ | ✅ |
+| 手动触发 (workflow_dispatch) | ✅ | ✅ | ❌ | ❌ |
 
 ## 概述
 
