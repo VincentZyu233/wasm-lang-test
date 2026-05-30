@@ -364,17 +364,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Publish to GitHub Packages
-        run: |
-          for pkg in npm-packages/@wasm-lang-test/*/; do
-            echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" > "$pkg/.npmrc"
-            cd "$pkg"
-            npm publish --registry https://npm.pkg.github.com
-            cd -
-          done
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Create Release
         uses: actions/create-release@v1
         env:
