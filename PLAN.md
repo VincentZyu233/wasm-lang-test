@@ -3,6 +3,11 @@
 
   This file provides project-specific guidance for all AI assistants (Claude, Gemini, GPT, etc.).
   All AI tools should read this file before starting work.
+
+  Related AI Configuration Files:
+  - [CLAUDE.md](./CLAUDE.md) - Claude-specific configuration
+  - [GEMINI.md](./GEMINI.md) - Gemini-specific configuration
+  - [.github/workflows/build.md](./.github/workflows/build.md) - CI/CD build guide
 -->
 
 # wasm-lang-test Project Plan
