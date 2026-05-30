@@ -1,0 +1,261 @@
+name: Build & Publish WASM Modules
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  # ── 判断是否需要构建 / 发布 ──────────────────────────────
+  check:
+    name: Check commit message
+    runs-on: ubuntu-latest
+    outputs:
+      should_build: ${{ steps.flags.outputs.should_build }}
+      should_publish: ${{ steps.flags.outputs.should_publish }}
+      version: ${{ steps.flags.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Parse commit message
+        id: flags
+        env:
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+        run: |
+          MSG="$COMMIT_MSG"
+          VERSION="v0.1.0"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "should_build=true" >> "$GITHUB_OUTPUT"
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          BUILD=false
+          PUBLISH=false
+
+          if echo "$MSG" | grep -qi "build publish"; then
+            BUILD=true
+            PUBLISH=true
+          elif echo "$MSG" | grep -qi "build action"; then
+            BUILD=true
+          fi
+
+          echo "should_build=$BUILD" >> "$GITHUB_OUTPUT"
+          echo "should_publish=$PUBLISH" >> "$GITHUB_OUTPUT"
+
+  # ── 编译 Rust WASM ────────────────────────────────────────
+  build-rust:
+    name: Build Rust WASM
+    needs: check
+    if: needs.check.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.org/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Build Rust WASM
+        working-directory: packages/wasm-lang-test-rust
+        run: wasm-pack build --target bundler --release
+
+      - name: Upload Rust artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rust-wasm
+          path: packages/wasm-lang-test-rust/pkg/
+
+  # ── 编译 Go WASM ────────────────────────────────────────
+  build-go:
+    name: Build Go WASM
+    needs: check
+    if: needs.check.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Build Go WASM
+        working-directory: packages/wasm-lang-test-go
+        run: |
+          GOOS=js GOARCH=wasm go build -o wasm_exec.wasm -ldflags="-s -w" ./cmd/main.go
+
+      - name: Upload Go artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: go-wasm
+          path: packages/wasm-lang-test-go/wasm_exec.wasm
+
+  # ── 编译 C++ WASM ────────────────────────────────────────
+  build-cpp:
+    name: Build C++ WASM
+    needs: check
+    if: needs.check.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Emscripten
+        uses: mymindstorm/setup-emsdk@v12
+        with:
+          version: latest
+
+      - name: Build C++ WASM
+        working-directory: packages/wasm-lang-test-cpp
+        run: |
+          emcripten src/main.cpp -o main.js -s WASM=1 -O3 \
+            -s EXPORTED_FUNCTIONS='["_fibonacci","_quickSort","_matrixMultiply","_wordFrequency"]' \
+            -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]'
+
+      - name: Upload C++ artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpp-wasm
+          path: packages/wasm-lang-test-cpp/main.wasm
+
+  # ── 发布到 npm ────────────────────────────────────────
+  publish-npm:
+    name: Publish to npm
+    needs: [check, build-rust, build-go, build-cpp]
+    if: needs.check.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Get version
+        id: version
+        run: |
+          echo "version=${{ needs.check.outputs.version }}" >> $GITHUB_OUTPUT
+
+      - name: Prepare Rust package
+        run: |
+          mkdir -p npm-packages/@wasm-lang-test/rust
+          cp artifacts/rust-wasm/* npm-packages/@wasm-lang-test/rust/
+          cat > npm-packages/@wasm-lang-test/rust/package.json << 'PKGJSON'
+          {
+            "name": "@wasm-lang-test/rust",
+            "version": "${{ steps.version.outputs.version }}",
+            "description": "Rust WASM benchmark module",
+            "main": "wasm_lang_test_rust.js",
+            "types": "wasm_lang_test_rust.d.ts",
+            "files": ["*.wasm", "*.js", "*.d.ts"],
+            "publishConfig": {
+              "access": "public"
+            }
+          }
+          PKGJSON
+
+      - name: Prepare Go package
+        run: |
+          mkdir -p npm-packages/@wasm-lang-test/go
+          cp artifacts/go-wasm/wasm_exec.wasm npm-packages/@wasm-lang-test/go/
+          cat > npm-packages/@wasm-lang-test/go/package.json << 'PKGJSON'
+          {
+            "name": "@wasm-lang-test/go",
+            "version": "${{ steps.version.outputs.version }}",
+            "description": "Go WASM benchmark module",
+            "main": "wasm_exec.wasm",
+            "files": ["*.wasm"],
+            "publishConfig": {
+              "access": "public"
+            }
+          }
+          PKGJSON
+
+      - name: Prepare C++ package
+        run: |
+          mkdir -p npm-packages/@wasm-lang-test/cpp
+          cp artifacts/cpp-wasm/main.wasm npm-packages/@wasm-lang-test/cpp/
+          cat > npm-packages/@wasm-lang-test/cpp/package.json << 'PKGJSON'
+          {
+            "name": "@wasm-lang-test/cpp",
+            "version": "${{ steps.version.outputs.version }}",
+            "description": "C++ WASM benchmark module",
+            "main": "main.wasm",
+            "files": ["*.wasm"],
+            "publishConfig": {
+              "access": "public"
+            }
+          }
+          PKGJSON
+
+      - name: Publish Rust package
+        working-directory: npm-packages/@wasm-lang-test/rust
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish Go package
+        working-directory: npm-packages/@wasm-lang-test/go
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish C++ package
+        working-directory: npm-packages/@wasm-lang-test/cpp
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to GitHub Packages
+        run: |
+          for pkg in npm-packages/@wasm-lang-test/*/; do
+            echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}" > "$pkg/.npmrc"
+            cd "$pkg"
+            npm publish --registry https://npm.pkg.github.com
+            cd -
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          release_name: Release v${{ steps.version.outputs.version }}
+          body: |
+            ## 📦 WASM Modules Published
+
+            - ✅ @wasm-lang-test/rust v${{ steps.version.outputs.version }}
+            - ✅ @wasm-lang-test/go v${{ steps.version.outputs.version }}
+            - ✅ @wasm-lang-test/cpp v${{ steps.version.outputs.version }}
+
+            Built and signed on GitHub Actions
+
+            ### Installation
+            ```bash
+            npm install @wasm-lang-test/rust @wasm-lang-test/go @wasm-lang-test/cpp
+            ```
+          draft: false
+          prerelease: false
