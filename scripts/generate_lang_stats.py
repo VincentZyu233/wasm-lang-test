@@ -4,11 +4,12 @@ Generate animated SVG showing language byte distribution.
 """
 
 import os
-import json
+import math
 from pathlib import Path
 from collections import defaultdict
+from datetime import datetime
 
-# Language file extensions
+# Language file extensions (exclude markdown, yaml, json)
 LANG_EXTENSIONS = {
     '.rs': 'Rust',
     '.cpp': 'C++',
@@ -17,13 +18,20 @@ LANG_EXTENSIONS = {
     '.kt': 'Kotlin',
     '.js': 'JavaScript',
     '.ts': 'TypeScript',
-    '.json': 'JSON',
-    '.yaml': 'YAML',
-    '.yml': 'YAML',
-    '.md': 'Markdown',
 }
 
-IGNORE_DIRS = {'.git', 'node_modules', '.github', 'build', 'dist', 'target', '.gradle'}
+# Language colors (GitHub style)
+LANG_COLORS = {
+    'Rust': '#dea584',
+    'C++': '#f34b7d',
+    'Go': '#00ADD8',
+    'Dart': '#00B4AB',
+    'Kotlin': '#A97BFF',
+    'JavaScript': '#f1e05a',
+    'TypeScript': '#3178c6',
+}
+
+IGNORE_DIRS = {'.git', 'node_modules', '.github', 'build', 'dist', 'target', '.gradle', 'pkg'}
 IGNORE_FILES = {'.gitignore', '.npmrc', 'package-lock.json'}
 
 
@@ -32,7 +40,6 @@ def count_bytes_by_language(root_dir):
     stats = defaultdict(int)
 
     for dirpath, dirnames, filenames in os.walk(root_dir):
-        # Remove ignored directories
         dirnames[:] = [d for d in dirnames if d not in IGNORE_DIRS]
 
         for filename in filenames:
@@ -54,74 +61,74 @@ def count_bytes_by_language(root_dir):
     return dict(sorted(stats.items(), key=lambda x: x[1], reverse=True))
 
 
+def format_bytes(bytes_val):
+    """Format bytes to human readable."""
+    if bytes_val >= 1_000_000:
+        return f"{bytes_val / 1_000_000:.1f} MB"
+    if bytes_val >= 1_000:
+        return f"{bytes_val / 1_000:.1f} KB"
+    return f"{bytes_val} B"
+
+
 def generate_svg(stats):
-    """Generate animated SVG pie chart."""
+    """Generate animated SVG bar chart."""
     total = sum(stats.values())
     if total == 0:
         return ""
 
-    colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2']
+    bar_height = 32
+    bar_padding = 2
+    row_height = bar_height + bar_padding
+    content_start_y = 120
+    height = content_start_y + len(stats) * row_height + 40
+    svg_width = 480
 
-    # Calculate angles
-    angles = []
-    current_angle = 0
-    for lang, size in stats.items():
-        percentage = (size / total) * 100
-        angle = (size / total) * 360
-        angles.append((lang, size, percentage, current_angle, angle))
-        current_angle += angle
-
-    # SVG header
-    svg = f'''<svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
+    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{svg_width}" height="{height}" viewBox="0 0 {svg_width} {height}">
   <defs>
     <style>
-      @keyframes fadeIn {{
-        from {{ opacity: 0; }}
-        to {{ opacity: 1; }}
-      }}
-      .lang-segment {{ animation: fadeIn 0.5s ease-in-out forwards; }}
-      .lang-label {{ font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; }}
-      .lang-percent {{ font-family: Arial, sans-serif; font-size: 11px; }}
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@400;600&display=swap');
+      .bg {{ fill: #0d1117; }}
+      .title {{ font-family: 'Noto Sans Mono', monospace; font-size: 16px; font-weight: 600; fill: #64b5f6; }}
+      .subtitle {{ font-family: 'Noto Sans Mono', monospace; font-size: 11px; fill: #8b949e; }}
+      .lang-name {{ font-family: 'Noto Sans Mono', monospace; font-size: 14px; fill: #e6edf3; }}
+      .lang-pct {{ font-family: 'Noto Sans Mono', monospace; font-size: 13px; fill: #8b949e; }}
+      .bar-bg {{ fill: #161b22; }}
+      @keyframes fadeInRight {{ from {{ opacity: 0; transform: translateX(-8px); }} to {{ opacity: 1; transform: translateX(0); }} }}
+      @keyframes fadeInDown {{ from {{ opacity: 0; transform: translateY(-10px); }} to {{ opacity: 1; transform: translateY(0); }} }}
+      .row {{ animation: fadeInRight 0.6s ease forwards; opacity: 0; }}
+      .title-anim {{ animation: fadeInDown 0.8s ease forwards; opacity: 0; }}
     </style>
   </defs>
 
-  <!-- Title -->
-  <text x="200" y="30" text-anchor="middle" style="font-size: 20px; font-weight: bold;">Language Distribution</text>
-  <text x="200" y="50" text-anchor="middle" style="font-size: 12px; fill: #666;">by bytes</text>
+  <rect class="bg" width="{svg_width}" height="{height}"/>
+
+  <text class="title title-anim" x="20" y="30">📊 wasm-lang-test · Code Distribution</text>
+  <text class="subtitle title-anim" style="animation-delay: 0.2s;" x="20" y="48">Total: {format_bytes(total)}</text>
+  <text class="subtitle title-anim" style="animation-delay: 0.3s;" x="20" y="68">Updated: {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC</text>
 '''
 
-    # Draw pie segments
-    for i, (lang, size, percentage, start_angle, angle) in enumerate(angles):
-        color = colors[i % len(colors)]
-        delay = i * 0.1
+    # Calculate max percentage for bar scaling
+    max_percent = max((size / total * 100) for size in stats.values()) if stats else 0
 
-        # Convert to radians
-        start_rad = (start_angle - 90) * 3.14159 / 180
-        end_rad = (start_angle + angle - 90) * 3.14159 / 180
+    # Draw each language row
+    for i, (lang, size) in enumerate(stats.items()):
+        y = content_start_y + i * row_height
+        percentage = (size / total) * 100
+        delay = 0.4 + i * 0.1
+        color = LANG_COLORS.get(lang, '#8b8b8b')
 
-        # Calculate path
-        x1 = 200 + 80 * (3.14159 / 180) * (start_angle - 90) / (3.14159 / 180)
-        y1 = 250 + 80 * (3.14159 / 180) * (start_angle - 90) / (3.14159 / 180)
-        x2 = 200 + 80 * (3.14159 / 180) * (start_angle + angle - 90) / (3.14159 / 180)
-        y2 = 250 + 80 * (3.14159 / 180) * (start_angle + angle - 90) / (3.14159 / 180)
+        # Bar width calculation (relative to max)
+        bar_width = 280 * (percentage / max_percent) if max_percent > 0 else 0
 
-        large_arc = 1 if angle > 180 else 0
-
-        # Simplified: use circle segments
-        svg += f'''  <circle cx="200" cy="250" r="80" fill="{color}" opacity="0.8"
-    style="animation: fadeIn 0.5s ease-in-out {delay}s both;" />
-'''
-
-    # Legend
-    legend_y = 350
-    for i, (lang, size, percentage, _, _) in enumerate(angles):
-        color = colors[i % len(colors)]
-        x = 20 + (i % 2) * 200
-        y = legend_y + (i // 2) * 25
-
-        svg += f'''  <rect x="{x}" y="{y}" width="12" height="12" fill="{color}" />
-  <text x="{x + 18}" y="{y + 10}" class="lang-label">{lang}</text>
-  <text x="{x + 18}" y="{y + 22}" class="lang-percent">{percentage:.1f}% ({size:,} bytes)</text>
+        svg += f'''  <g class="row" style="animation-delay: {delay:.1f}s;">
+    <circle cx="30" cy="{y + bar_height / 2}" r="6" fill="{color}"/>
+    <text class="lang-name" x="44" y="{y + bar_height / 2 + 4}">{lang}</text>
+    <rect class="bar-bg" x="160" y="{y + 4}" width="280" height="{bar_height - 8}" rx="4"/>
+    <rect x="160" y="{y + 4}" width="0" height="{bar_height - 8}" rx="4" fill="{color}" opacity="0.85">
+      <animate attributeName="width" from="0" to="{bar_width}" dur="0.8s" begin="{delay}s" fill="freeze"/>
+    </rect>
+    <text class="lang-pct" x="450" y="{y + bar_height / 2 + 4}" text-anchor="end">{percentage:.1f}%</text>
+  </g>
 '''
 
     svg += '</svg>'
