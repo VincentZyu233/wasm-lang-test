@@ -47,7 +47,7 @@ npm run build:wasm
 npm run dev
 ```
 
-访问 `http://localhost:5173` 查看性能测试页面。
+访问 `http://localhost:60531` 查看性能测试页面。
 
 ### 2. 发布流程（仅 wasm 模块）
 

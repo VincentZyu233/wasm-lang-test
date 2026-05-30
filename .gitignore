@@ -7,9 +7,6 @@ yarn.lock
 dist/
 build/
 *.wasm
-*.js
-!ui/main.js
-!ui/vite.config.js
 *.d.ts
 pkg/
 

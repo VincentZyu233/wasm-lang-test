@@ -22,7 +22,7 @@ npm install
 npm run dev
 ```
 
-访问 `http://localhost:5173` 查看性能测试页面。
+访问 `http://localhost:60531` 查看性能测试页面。
 
 ### 方式 2：本地编译 wasm 模块
 
