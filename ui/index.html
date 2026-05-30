@@ -1,16 +1,25 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+  <!-- 字符编码和视口设置 -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 页面标题 -->
   <title>WASM 性能对比测试</title>
+
+  <!-- 引入外部样式表 -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- 主容器 -->
   <div class="container">
+    <!-- 页面标题 -->
     <h1>🚀 WASM 性能对比测试</h1>
 
+    <!-- 测试卡片网格布局 -->
     <div class="grid">
+      <!-- 测试 1: 斐波那契数列 (递归密集型) -->
       <div class="card">
         <h2>1️⃣ 斐波那契数列</h2>
         <p>递归密集型计算 (fib(35))</p>
@@ -18,6 +27,7 @@
         <div id="fib-result"></div>
       </div>
 
+      <!-- 测试 2: 快速排序 (内存操作) -->
       <div class="card">
         <h2>2️⃣ 快速排序</h2>
         <p>内存操作 (100,000 个数)</p>
@@ -25,6 +35,7 @@
         <div id="sort-result"></div>
       </div>
 
+      <!-- 测试 3: 矩阵乘法 (计算密集型) -->
       <div class="card">
         <h2>3️⃣ 矩阵乘法</h2>
         <p>计算密集型 (512×512)</p>
@@ -32,6 +43,7 @@
         <div id="matrix-result"></div>
       </div>
 
+      <!-- 测试 4: 字符串处理 (文本处理) -->
       <div class="card">
         <h2>4️⃣ 字符串处理</h2>
         <p>文本处理 (单词频率)</p>
@@ -40,8 +52,10 @@
       </div>
     </div>
 
+    <!-- 性能对比表格 -->
     <div class="comparison">
       <h2>📊 性能对比</h2>
+      <!-- 对比表格: 显示五种语言 (Rust, Go, C++, Dart, Kotlin) 的性能数据 -->
       <table id="comparison-table">
         <thead>
           <tr>
@@ -60,6 +74,7 @@
     </div>
   </div>
 
+  <!-- 引入主要 JavaScript 模块 -->
   <script type="module" src="main.js"></script>
 </body>
 </html>

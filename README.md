@@ -1,6 +1,6 @@
 # wasm-lang-test
 
-🚀 对比 C++、Go、Rust 三种语言在 WebAssembly 中的性能表现。
+🚀 对比 C++、Go、Rust、Dart、Kotlin 五种语言在 WebAssembly 中的性能表现。
 
 ## 快速开始
 
@@ -103,6 +103,8 @@ git push origin main
 - `@wasm-lang-test/rust` - Rust 实现
 - `@wasm-lang-test/go` - Go 实现
 - `@wasm-lang-test/cpp` - C++ 实现
+- `@wasm-lang-test/dart` - Dart 实现
+- `@wasm-lang-test/kotlin` - Kotlin 实现
 
 ## 开发
 
