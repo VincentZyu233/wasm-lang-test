@@ -182,8 +182,10 @@ jobs:
 
       - name: Build Kotlin WASM
         working-directory: packages/wasm-lang-test-kotlin
-        shell: bash --noprofile --norc {0}
         run: |
+          for key in $(env | grep '^BASH_FUNC_' | cut -d= -f1); do
+            unset "$key" 2>/dev/null || true
+          done
           ./gradlew wasmJsBrowserProductionWebpack --no-daemon -Dorg.gradle.jvmargs="-Xmx2048M -XX:MaxMetaspaceSize=512M"
 
       - name: Upload Kotlin artifact
