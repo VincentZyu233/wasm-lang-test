@@ -26,7 +26,7 @@ function showLoading(id) {
  */
 function showResult(id, data) {
   const html = Object.entries(data)
-    .map(([lang, time]) => `<p><strong>${lang}:</strong> ${time.toFixed(2)} ms</p>`)
+    .map(([lang, time]) => `<p><strong>${lang}:</strong> ${typeof time === 'number' ? time.toFixed(2) : time} ms</p>`)
     .join('');
   document.getElementById(id).innerHTML = `<div class="result">${html}</div>`;
 }
@@ -64,22 +64,6 @@ window.runFibonacci = async () => {
     data['C++'] = 'Error';
   }
 
-  try {
-    const dartMod = await import('@wasm-lang-test/dart');
-    const start = performance.now();
-    data['Dart'] = performance.now() - start;
-  } catch (e) {
-    data['Dart'] = 'Error';
-  }
-
-  try {
-    const kotlinMod = await import('@wasm-lang-test/kotlin');
-    const start = performance.now();
-    data['Kotlin'] = performance.now() - start;
-  } catch (e) {
-    data['Kotlin'] = 'Error';
-  }
-
   results['fibonacci'] = data;
   showResult('fib-result', data);
   updateComparison();
@@ -101,22 +85,6 @@ window.runQuickSort = async () => {
     data['Rust'] = performance.now() - start;
   } catch (e) {
     data['Rust'] = 'Error';
-  }
-
-  try {
-    const dartMod = await import('@wasm-lang-test/dart');
-    const start = performance.now();
-    data['Dart'] = performance.now() - start;
-  } catch (e) {
-    data['Dart'] = 'Error';
-  }
-
-  try {
-    const kotlinMod = await import('@wasm-lang-test/kotlin');
-    const start = performance.now();
-    data['Kotlin'] = performance.now() - start;
-  } catch (e) {
-    data['Kotlin'] = 'Error';
   }
 
   results['quickSort'] = data;
@@ -141,22 +109,6 @@ window.runMatrixMul = async () => {
     data['Rust'] = 'Error';
   }
 
-  try {
-    const dartMod = await import('@wasm-lang-test/dart');
-    const start = performance.now();
-    data['Dart'] = performance.now() - start;
-  } catch (e) {
-    data['Dart'] = 'Error';
-  }
-
-  try {
-    const kotlinMod = await import('@wasm-lang-test/kotlin');
-    const start = performance.now();
-    data['Kotlin'] = performance.now() - start;
-  } catch (e) {
-    data['Kotlin'] = 'Error';
-  }
-
   results['matrixMul'] = data;
   showResult('matrix-result', data);
   updateComparison();
@@ -178,22 +130,6 @@ window.runWordFreq = async () => {
     data['Rust'] = performance.now() - start;
   } catch (e) {
     data['Rust'] = 'Error';
-  }
-
-  try {
-    const dartMod = await import('@wasm-lang-test/dart');
-    const start = performance.now();
-    data['Dart'] = performance.now() - start;
-  } catch (e) {
-    data['Dart'] = 'Error';
-  }
-
-  try {
-    const kotlinMod = await import('@wasm-lang-test/kotlin');
-    const start = performance.now();
-    data['Kotlin'] = performance.now() - start;
-  } catch (e) {
-    data['Kotlin'] = 'Error';
   }
 
   results['wordFreq'] = data;
@@ -223,8 +159,6 @@ function updateComparison() {
       <td>${typeof data['Rust'] === 'number' ? data['Rust'].toFixed(2) : data['Rust']}</td>
       <td>${typeof data['Go'] === 'number' ? data['Go'].toFixed(2) : data['Go']}</td>
       <td>${typeof data['C++'] === 'number' ? data['C++'].toFixed(2) : data['C++']}</td>
-      <td>${typeof data['Dart'] === 'number' ? data['Dart'].toFixed(2) : data['Dart']}</td>
-      <td>${typeof data['Kotlin'] === 'number' ? data['Kotlin'].toFixed(2) : data['Kotlin']}</td>
     </tr>`;
   }
   tbody.innerHTML = html;

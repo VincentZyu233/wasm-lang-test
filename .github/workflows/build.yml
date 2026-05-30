@@ -100,12 +100,15 @@ jobs:
         working-directory: packages/wasm-lang-test-go
         run: |
           GOOS=js GOARCH=wasm go build -o wasm_exec.wasm -ldflags="-s -w" ./cmd/main.go
+          cp "$(go env GOROOT)/misc/wasm/wasm_exec.js" wasm_exec.js
 
       - name: Upload Go artifact
         uses: actions/upload-artifact@v4
         with:
           name: go-wasm
-          path: packages/wasm-lang-test-go/wasm_exec.wasm
+          path: |
+            packages/wasm-lang-test-go/wasm_exec.wasm
+            packages/wasm-lang-test-go/wasm_exec.js
 
   # ── 编译 C++ WASM ────────────────────────────────────────
   build-cpp:
@@ -133,7 +136,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: cpp-wasm
-          path: packages/wasm-lang-test-cpp/main.wasm
+          path: |
+            packages/wasm-lang-test-cpp/main.wasm
+            packages/wasm-lang-test-cpp/main.js
 
   # ── 编译 Dart WASM ────────────────────────────────────────
   build-dart:
@@ -254,15 +259,15 @@ jobs:
       - name: Prepare Go package
         run: |
           mkdir -p npm-packages/@wasm-lang-test/go
-          cp artifacts/go-wasm/wasm_exec.wasm npm-packages/@wasm-lang-test/go/
+          cp artifacts/go-wasm/wasm_exec.wasm artifacts/go-wasm/wasm_exec.js npm-packages/@wasm-lang-test/go/
           cp README.md npm-packages/@wasm-lang-test/go/README.md
           cat > npm-packages/@wasm-lang-test/go/package.json << 'PKGJSON'
           {
             "name": "@wasm-lang-test/go",
             "version": "${{ steps.version.outputs.version }}",
             "description": "Go WASM benchmark module",
-            "main": "wasm_exec.wasm",
-            "files": ["*.wasm"],
+            "main": "wasm_exec.js",
+            "files": ["*.wasm", "*.js"],
             "repository": {
               "type": "git",
               "url": "git+https://github.com/VincentZyu233/wasm-lang-test.git"
@@ -276,15 +281,15 @@ jobs:
       - name: Prepare C++ package
         run: |
           mkdir -p npm-packages/@wasm-lang-test/cpp
-          cp artifacts/cpp-wasm/main.wasm npm-packages/@wasm-lang-test/cpp/
+          cp artifacts/cpp-wasm/main.wasm artifacts/cpp-wasm/main.js npm-packages/@wasm-lang-test/cpp/
           cp README.md npm-packages/@wasm-lang-test/cpp/README.md
           cat > npm-packages/@wasm-lang-test/cpp/package.json << 'PKGJSON'
           {
             "name": "@wasm-lang-test/cpp",
             "version": "${{ steps.version.outputs.version }}",
             "description": "C++ WASM benchmark module",
-            "main": "main.wasm",
-            "files": ["*.wasm"],
+            "main": "main.js",
+            "files": ["*.wasm", "*.js"],
             "repository": {
               "type": "git",
               "url": "git+https://github.com/VincentZyu233/wasm-lang-test.git"
