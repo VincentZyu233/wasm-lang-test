@@ -190,7 +190,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: kotlin-wasm
-          path: packages/wasm-lang-test-kotlin/build/dist/wasmJs/productionExecutable/
+          path: packages/wasm-lang-test-kotlin/build/bin/wasmJs/productionExecutable/
 
   # ── 发布到 npm ────────────────────────────────────────
   publish-npm:
