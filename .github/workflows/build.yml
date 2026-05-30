@@ -66,11 +66,11 @@ jobs:
           targets: wasm32-unknown-unknown
 
       - name: Install wasm-pack
-        run: curl https://rustwasm.org/wasm-pack/installer/init.sh -sSf | sh
+        run: curl https://rustwasm.org/wasm-pack/installer/init.sh -sSf | sh && export PATH="$HOME/.cargo/bin:$PATH"
 
       - name: Build Rust WASM
         working-directory: packages/wasm-lang-test-rust
-        run: wasm-pack build --target bundler --release
+        run: $HOME/.cargo/bin/wasm-pack build --target bundler --release
 
       - name: Upload Rust artifact
         uses: actions/upload-artifact@v4
@@ -120,7 +120,7 @@ jobs:
       - name: Build C++ WASM
         working-directory: packages/wasm-lang-test-cpp
         run: |
-          emcripten src/main.cpp -o main.js -s WASM=1 -O3 \
+          emcc src/main.cpp -o main.js -s WASM=1 -O3 \
             -s EXPORTED_FUNCTIONS='["_fibonacci","_quickSort","_matrixMultiply","_wordFrequency"]' \
             -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap"]'
 
