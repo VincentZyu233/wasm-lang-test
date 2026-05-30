@@ -1,6 +1,6 @@
 {
   "name": "wasm-lang-test",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Performance comparison of C++, Go, and Rust in WebAssembly",
   "private": true,
   "workspaces": [
